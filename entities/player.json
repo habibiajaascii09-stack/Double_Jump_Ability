@@ -1,0 +1,56 @@
+{
+  "format_version": "1.18.20",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:player",
+      "is_spawnable": false,
+      "is_summonable": false,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "jump:boost": {
+        "minecraft:jump.static": {
+          "jump_power": 0.65
+        },
+        "minecraft:timer": {
+          "time": 2.0,
+          "looping": false,
+          "time_down_event": {
+            "event": "jump:reset"
+          }
+        }
+      },
+      "jump:normal": {
+        "minecraft:jump.static": {
+          "jump_power": 0.42
+        }
+      }
+    },
+    "components": {
+      "minecraft:type_family": { "family": [ "player" ] },
+      "minecraft:jump.static": { "jump_power": 0.42 },
+      "minecraft:environment_sensor": {
+        "triggers": {
+          "filters": {
+            "all_of": [
+              { "test": "on_ground", "operator": "==", "value": false },
+              { "test": "is_gliding", "operator": "==", "value": false },
+              { "test": "is_swimming", "operator": "==", "value": false }
+            ]
+          },
+          "event": "jump:trigger"
+        }
+      }
+    },
+    "events": {
+      "jump:trigger": {
+        "add": { "component_groups": [ "jump:boost" ] },
+        "remove": { "component_groups": [ "jump:normal" ] }
+      },
+      "jump:reset": {
+        "add": { "component_groups": [ "jump:normal" ] },
+        "remove": { "component_groups": [ "jump:boost" ] }
+      }
+    }
+  }
+}
